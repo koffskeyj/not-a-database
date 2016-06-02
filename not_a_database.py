@@ -18,9 +18,6 @@ def user():
     with open("users.csv", "a") as outfile:
         outfile.write(info_packet)
 
-def modify():
-    with open("users.csv", "a+") as outfile:
-        print(list(outfile))
 
 def login():
     give_username = input("Please supply username: ")
