@@ -1,7 +1,10 @@
+from tempfile import NamedTemporaryFile
+import shutil
 import csv
 
 
 def user():
+
     username = input("Username: ")
     password = input("Password: ")
     full_name = input("Full Name: ")
@@ -18,25 +21,30 @@ def user():
     with open("users.csv", "a") as outfile:
         outfile.write(info_packet)
 
-def modify():
-    with open("users.csv", "a+") as outfile:
-        print(list(outfile))
 
 def login():
     give_username = input("Please supply username: ")
     give_password = input("Please supply password: ")
 
-    with open("users.csv") as infile:
+    with open("users.csv", "rb") as infile, open("users.csv", "wb") as outfile:
+        writer = csv.writer(outfile)
         authentication_check = csv.DictReader(infile, fieldnames=["username", "password", "full name", "favorite number"])
+        modify_input = input("Would you like to modify your user details? y/n: ")
         for row in authentication_check:
-            print(row)
             if give_username in row["username"] and give_password in row["password"]:
-                while True:
-                    create_or_log = input("Would you like to create a user or log out?? create/log out: ")
-                    if create_or_log == "create":
-                        user()
-                    if create_or_log == "log out":
-                        login()
+                    if modify_input == "y":
+                        if row["username"] != give_username:
+                            writer.writerow(row)
+                            user()
+            if modify_input == "n":
+                if give_username in row["username"] and give_password in row["password"]:
+                    while True:
+                        create_or_log = input("Would you like to create a user or log out??\
+                        create/log out: ")
+                        if create_or_log == "create":
+                            user()
+                        if create_or_log == "log out":
+                            login()
 
         else:
             print("Incorrect username or password. Please try again.")
@@ -52,6 +60,4 @@ def start():
         login()
 
 start()
-
-
 
